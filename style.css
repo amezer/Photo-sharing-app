@@ -1,0 +1,169 @@
+*{
+    font-family: 'Unica One', cursive;
+}
+
+body{
+    background-color: #edf2f4;
+    color: #2b2d42;
+}
+
+#title{
+    background-color: #2b2d42;
+    top: 0;
+    left: 0;
+    position: fixed;
+    width: 100%;
+    height: 15%;
+}
+
+#title p{
+    text-align: center;
+    font-size: 40px;
+    margin-top: 35px;
+}
+
+#title a{
+    margin-left: 30px;
+}
+
+a{
+    text-decoration: none;
+    color: #d90429;
+}
+
+.content{
+    margin-top: 150px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+    margin-top: 150px;
+}
+
+button, input, textarea{
+    width: 100%;
+    margin-top: 30px;
+    padding: 20px;
+    font-size: 20px;
+    border-radius: 5px;
+    border-color: #2b2d42;
+    background-color: #8d99ae;
+    border-width: 5px;
+    color: #edf2f4;
+}
+
+#searchBtn{
+    background-color: #d90429;
+    border: 0;
+    font-weight: bold;
+}
+
+input[type=text], input[type=password]{
+    width: 350px;
+    background-color: #edf2f4;
+    color: #2b2d42;
+}
+
+#p-image{
+    width: 360px;
+}
+
+#p-content, #bio{
+    width: 350px;
+}
+
+input[type=file]::file-selector-button{
+    border-color: #2b2d42;
+    background-color: #edf2f4;
+    border-width: 5px;
+    color: #2b2d42;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 5px;
+    font-family: 'Unica One', cursive;
+}
+
+#welcome{
+    color: #d90429;
+    font-size: 50px;
+    margin: auto;
+}
+
+.words{
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+
+#username{
+    color:#ef233c;
+}
+
+.post{
+    font-size: 20px;
+}
+
+.post img{
+    border: 5px solid #2b2d42;
+}
+
+img{
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+.postBorder{
+    width: 400px;
+    height: 50px;
+    background-color: #d90429;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.postBorder p {
+    display: inline-block;
+    line-height: normal;
+    vertical-align: middle;
+    color: #edf2f4;
+}
+
+.followBtn{
+    background-color: #ef233c;
+    width: auto;
+    border-color: #d90429;
+    margin: auto;
+    padding: 10px;
+}
+
+.edits{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+}
+
+.edits a{
+    border: 3px solid #2b2d42;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #2b2d42;
+    color: #edf2f4;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table{
+    margin-top: 20px;
+    background-color: #8d99ae;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    border: solid 3px #2b2d42;
+}
+
+th, td{
+    border: solid 3px #2b2d42;
+    border-radius: 5px;
+    padding: 10px;
+}
+
