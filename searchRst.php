@@ -39,7 +39,7 @@
                 $row = $stmt -> fetch();
                 
                 for($i = 0; $i < count($row['Username']); $i++){
-                    echo '<a href = "display.php?id='.$row['ID'].'">'.'<img style="width: 100px; height: auto" src="data:image/jpg;base64,'.base64_encode($row['Profile_pic']).'" />'.$row['Username'].'</a>';
+                    echo '<a href = "display.php?id='.$row['ID'].'" style="display: flex; align-item: center">'.'<img style="width: auto; height: 100px; margin-top: 0" src="data:image/jpg;base64,'.base64_encode($row['Profile_pic']).'" /><div style="font-size: 40px; padding: 30px">'.$row['Username'].'</div></a>';
                 }
 
             }catch(PDOException $e) {

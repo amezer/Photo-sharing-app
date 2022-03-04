@@ -172,7 +172,7 @@
                 $usernames = array_column($result, 'Username');
                 $userPics = array_column($result, 'Profile_pic');
 
-                echo '<div class="postBorder"><p>User Posts</p></div>';
+                echo '<div class="border"><p>User Posts</p></div>';
                 for($i = 0; $i < count($content); $i++){
                     $echoed = false;
                     echo
@@ -197,14 +197,14 @@
                         </form>';
                     }
 
-                    echo '<div class="border"><p>Comments</p></div>';
+                    echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">Comments</button>';
 
+                    echo '<div id="allComments'.$postIDs[$i].'" style="display: none">';
                     for($j = 0; $j < count($commenterIDs); $j++){
                         $commenterName = "defaultName";
                         $commenterPic = $_SESSION['img'];
                         $canEcho = false;
                         for($k = 0; $k < count($userdbIDs); $k++){ //get the commenter's username
-                            
                             if($commenterIDs[$j] == $userdbIDs[$k] && $commentingPostIDs[$j] == $postIDs[$i]){
                                 $commenterName = $usernames[$k];
                                 $commenterPic = $userPics[$k];
@@ -217,8 +217,8 @@
                             echo '
                             <div class="comment">
                             <div id="commentUserInfo">
-                                <img id="commenterPic" style="width: auto; height: 30px" src="data:image/jpg;base64,'.base64_encode($commenterPic).'" />
-                                <div id="commenterName">'.$commenterName.'</div>
+                                <a href="display.php?id='.$commenterIDs[$j].'"><img id="commenterPic" style="width: auto; height: 30px" src="data:image/jpg;base64,'.base64_encode($commenterPic).'" />
+                                <div id="commenterName">'.$commenterName.'</a></div>
                             </div>
                             <div id="commentBody">
                                 <div id="commentContext">'.$commentContexts[$j].'</div>
@@ -234,12 +234,24 @@
                         <textarea name="c-context'.$postIDs[$i].'" id="c-context'.$postIDs[$i].'" row="1" class="commentTxt"></textarea>
                         <input type="submit" name="comment'.$postIDs[$i].'" id="comment'.$postIDs[$i].'" value="comment" class="commentBtn">
                     </form>';
-                    echo '</div><br>';
+                    echo '</div></div><br>';
                 }
             }catch(PDOException $e){
                 print("Error: " . $sql . "<br>" . $e->getMessage());
             }
         ?>
+
+        <script>
+            function showComments(id){
+                var tmp = document.getElementById("allComments"+id);
+                if(tmp.style.display === "block"){
+                    tmp.style.display = "none";
+                }else{
+                    tmp.style.display = "block";
+                }
+                
+            }
+        </script>
         <!-- php for pogging posts on user profile page -->
         <?php
          if(isset($_POST['pog'.$_POST['post-id']])) {
