@@ -19,6 +19,28 @@
     </div>
     <div class="content">
     <?php
+        if(isset($_POST['comment'.$_POST['post-id']])) {
+            addComment($_POST['post-id'], $_POST['c-context'.$_POST['post-id']]);
+            unset($_POST['comment'.$_POST['post-id']]);
+        }
+
+        function addComment($postID, $context){
+            session_start();
+            $id = $_SESSION['id'];
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = $conn->prepare("INSERT INTO `Comments`(`Post_ID`, `Commenter_ID`, `Context`) VALUES ('$postID','$id','$context')");
+            $sql->execute();
+            header("refresh: 0;");
+        }
+    ?>
+
+    <?php
         session_start();
         $current_userID = $_SESSION['id'];
         $dbServername = "localhost";
@@ -45,6 +67,7 @@
 
             $userdbIDs = array_column($result, 'ID');
             $usernames = array_column($result, 'Username');
+            $userPics = array_column($result, 'Profile_pic');
 
             $sql = $conn->prepare("SELECT * FROM Follows"); //fetching data for all posts
             $sql->execute();
@@ -58,6 +81,14 @@
             $result = $sql->fetchAll();
             $dbPostID = array_column($result, 'Post_ID');
             $dbUserID = array_column($result, 'User_ID');
+
+            $sql = $conn->prepare("SELECT * FROM Comments"); //fetching data for all Comments
+            $sql->execute();
+            $result = $sql->fetchAll();
+            $commenterIDs = array_column($result, 'Commenter_ID');
+            $commentingPostIDs = array_column($result, 'Post_ID');
+            $commentContexts = array_column($result, 'Context');
+            $commentTimes = array_column($result, 'Comment_time');
 
             for ($i = 0; $i < count($userIDs); $i++){ //iterate through all post rows
                 $postUsername = "defaultName";
@@ -88,23 +119,59 @@
                             <img style="width: 400px; height: auto" src="data:image/jpg;base64,'.base64_encode($pics[$i]).'" />
                         </div>
                         <div class="post-content">'.$contents[$i].'</div>
-                        <div>
                         <form method="post" action = "viewPosts.php">
                             <input type="text" name="post-id" value="'.$postIDs[$i].'" style = "display:none">';
                     
                     for($l = 0; $l < count($dbPostID); $l++){
                         if($postIDs[$i] == $dbPostID[$l] && $id == $dbUserID[$l]){
                             echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="UNPOG" id="pog'.$postIDs[$i].'">
-                                    </form></div></div>
-                                <br>';
+                                    </form>';
                             $echoed = true;
                         }
                     }
                     if(!$echoed){
                         echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="POG" id="pog'.$postIDs[$i].'">
-                        </form></div></div>
-                    <br>';
+                        </form>';
                     }
+                    
+                    echo '<div class="border"><p>Comments</p></div>';
+
+
+                    for($j = 0; $j < count($commenterIDs); $j++){
+                        $commenterName = "defaultName";
+                        $commenterPic = $_SESSION['img'];
+                        $canEcho = false;
+                        for($k = 0; $k < count($userdbIDs); $k++){ //get the commenter's username
+                            if($commenterIDs[$j] == $userdbIDs[$k] && $commentingPostIDs[$j] == $postIDs[$i]){
+                                $commenterName = $usernames[$k];
+                                $commenterPic = $userPics[$k];
+                                $canEcho = true;
+                                break;
+                            }
+                        }
+
+                        if($canEcho){
+                            echo '
+                            <div class="comment">
+                            <div id="commentUserInfo">
+                                <img id="commenterPic" style="width: auto; height: 30px" src="data:image/jpg;base64,'.base64_encode($commenterPic).'" />
+                                <div id="commenterName">'.$commenterName.'</div>
+                            </div>
+                            <div id="commentBody">
+                                <div id="commentContext">'.$commentContexts[$j].'</div>
+                                <div id="commentTime">'.$commentTimes[$j].'</div>
+                            </div>
+                            </div><br>';
+                        }
+                        
+                    }
+
+                    echo '<form method="post" action="viewPosts.php" id="commentForm">
+                        <input type="text" name="post-id" value="'.$postIDs[$i].'" style = "display:none">
+                        <textarea name="c-context'.$postIDs[$i].'" id="c-context'.$postIDs[$i].'" row="1" class="commentTxt"></textarea>
+                        <input type="submit" name="comment'.$postIDs[$i].'" id="comment'.$postIDs[$i].'" value="comment" class="commentBtn">
+                    </form>';
+                    echo '</div><br>';
                 }
             }
 
@@ -142,10 +209,6 @@
                     $conn -> exec($sql);
                     $executed = 1;
                     echo '<script> document.getElementById("pog'.$postID.'").value = "POG";</script>';
-                    // echo 
-                    // '<script type="text/javascript">
-                    //     document.getElementById("pog").value = "POG";
-                    // </script>';
                     break;
                 }
             }
@@ -153,10 +216,6 @@
                 $sql = "INSERT INTO POGs (Post_ID, User_ID) VALUES ($postID, $id)";
                 $conn -> exec($sql);
                 echo '<script> document.getElementById("pog'.$postID.'").value = "UNPOG";</script>';
-                // echo 
-                // '<script type="text/javascript">
-                //     document.getElementById('pog').value = "UNPOG";
-                // </script>';
             }
             $executed = 0;
          }

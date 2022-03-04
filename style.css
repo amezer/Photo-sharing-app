@@ -111,21 +111,22 @@ img{
     margin-top: 20px;
 }
 
-.postBorder{
+.border{
     width: 400px;
     height: 50px;
     background-color: #d90429;
     border-radius: 5px;
     text-align: center;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
-.postBorder p {
+.border p {
     display: inline-block;
     line-height: normal;
     vertical-align: middle;
     color: #edf2f4;
+    margin-top: 15px;
 }
 
 .followBtn{
@@ -167,3 +168,55 @@ th, td{
     padding: 10px;
 }
 
+.comment{
+    background-color: #8d99ae;
+    /* padding: 20px; */
+    border-radius: 5px;
+} 
+
+#commentForm{
+    display: flex;
+}
+
+.commentTxt{
+    width: 200px;
+    height: 24px;
+    margin-top: 0;
+}
+
+.commentBtn{
+    width: 150px;
+    margin-left: 10px;
+    height: 50%;
+    background-color: #ef233c;
+    border-color: #d90429;
+    margin-top: 0;
+}
+
+#commentUserInfo{
+    display: flex;
+    align-items: center;
+    background-color: #2b2d42;
+    color: #edf2f4;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#commentBody{
+    padding: 20px;
+}
+
+#commenterPic{
+    margin-top: 0;
+    border: 0;
+}
+
+#commenterName{
+    margin-left: 10px;
+}
+
+#commentTime{
+    color:#edf2f4;
+    font-size: 15px;
+}
