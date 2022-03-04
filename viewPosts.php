@@ -38,7 +38,68 @@
             $sql->execute();
             header("refresh: 0;");
         }
+
+        if(isset($_POST['editComment'.$_POST['comment-id']])) {
+            updateComment($_POST['comment-id'], $_POST['c-context'.$_POST['comment-id']]);
+            unset($_POST['editComment'.$_POST['comment-id']]);
+        }
+
+        function updateComment($commentID, $context){
+            session_start();
+            $id = $_SESSION['id'];
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "UPDATE Comments SET Context = '$context' WHERE Comment_ID = '$commentID'";
+            $conn -> exec($sql);
+            header("refresh: 0;");
+        }
+
+        if(isset($_POST['removeComment'.$_POST['comment-id']])) {
+            removeComment($_POST['comment-id']);
+            unset($_POST['removeComment'.$_POST['comment-id']]);
+        }
+
+        function removeComment($commentID){
+            session_start();
+            $id = $_SESSION['id'];
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "DELETE FROM Comments WHERE Comment_ID = '$commentID'";
+            $conn -> exec($sql);
+            header("refresh: 0;");
+        }
     ?>
+
+    <script>
+        function showComments(id){
+            var tmp = document.getElementById("allComments"+id);
+            if(tmp.style.display === "block"){
+                tmp.style.display = "none";
+            }else{
+                tmp.style.display = "block";
+            }
+            
+        }
+
+        function showEditComment(id){
+            var tmp = document.getElementById("editCommentForm"+id);
+            if(tmp.style.display === "flex"){
+                tmp.style.display = "none";
+            }else{
+                tmp.style.display = "flex";
+            }
+        }
+    </script>
 
     <?php
         session_start();
@@ -82,9 +143,10 @@
             $dbPostID = array_column($result, 'Post_ID');
             $dbUserID = array_column($result, 'User_ID');
 
-            $sql = $conn->prepare("SELECT * FROM Comments"); //fetching data for all Comments
+            $sql = $conn->prepare("SELECT * FROM Comments ORDER BY Comment_ID DESC"); //fetching data for all Comments
             $sql->execute();
             $result = $sql->fetchAll();
+            $commentIDs = array_column($result, 'Comment_ID');
             $commenterIDs = array_column($result, 'Commenter_ID');
             $commentingPostIDs = array_column($result, 'Post_ID');
             $commentContexts = array_column($result, 'Context');
@@ -133,9 +195,20 @@
                         echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="POG" id="pog'.$postIDs[$i].'">
                         </form>';
                     }
-                    
-                    echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">Comments</button>';
+                    $sql = $conn->prepare("SELECT Post_ID FROM Comments WHERE Post_ID = '$postIDs[$i]'");
+                    $sql->execute();
+                    $result = $sql->fetchAll();
 
+                    $numOfComments = count(array_column($result, 'Post_ID'));
+
+                    if($numOfComments > 1){
+                        echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">'.$numOfComments.' Comments</button>';
+                    }else if($numOfComments == 1){
+                        echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">1 Comment</button>';
+                    }else{
+                        echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">Add Comments</button>';
+                    }
+                    
                     echo '<div id="allComments'.$postIDs[$i].'" style="display: none">';
                     for($j = 0; $j < count($commenterIDs); $j++){
                         $commenterName = "defaultName";
@@ -160,8 +233,25 @@
                             <div id="commentBody">
                                 <div id="commentContext">'.$commentContexts[$j].'</div>
                                 <div id="commentTime">'.$commentTimes[$j].'</div>
-                            </div>
-                            </div><br>';
+                            </div>';
+
+                            if ($current_userID == $commenterIDs[$j]){
+                                echo '<div id="commentActions">
+                                    <button onclick="showEditComment('.$commentIDs[$j].')" name="editComment" id="editComment">Edit</button>
+                                    <form method="post" action"viewPosts.php" id="deleteCommentHandler'.$commentIDs[$j].'" style="width:100%">
+                                        <input type="text" name="comment-id" value="'.$commentIDs[$j].'" style = "display:none;">
+                                        <input type="submit" name="removeComment'.$commentIDs[$j].'" id="removeComment" value="Remove">
+                                    </form></div>
+                                    ';
+                            }
+                            
+                            echo '<form method="post" action="viewPosts.php" id="editCommentForm'.$commentIDs[$j].'" style="display:none; align-item: center; background-color: #2b2d42; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                                <input type="text" name="comment-id" value="'.$commentIDs[$j].'" style = "display:none">
+                                <textarea name="c-context'.$commentIDs[$j].'" id="c-context'.$commentIDs[$j].'" row="1" class="commentTxt" style="margin: 10px"></textarea>
+                                <input type="submit" name="editComment'.$commentIDs[$j].'" id="editComment'.$commentIDs[$j].'" value="Edit" class="commentBtn" style="margin: 10px">
+                            </form>';
+
+                            echo '</div><br>';
                         }
                         
                     }
@@ -179,18 +269,6 @@
             print("Error: " . $sql . "<br>" . $e->getMessage());
         }
     ?>
-
-    <script>
-        function showComments(id){
-            var tmp = document.getElementById("allComments"+id);
-            if(tmp.style.display === "block"){
-                tmp.style.display = "none";
-            }else{
-                tmp.style.display = "block";
-            }
-            
-        }
-    </script>
 
     <?php
          if(isset($_POST['pog'.$_POST['post-id']])) {
