@@ -178,9 +178,17 @@ th, td{
 }
 
 .comment{
-    background-color: #2b2d42;
+    /* background-color: #2b2d42; */
     border-radius: 5px;
 } 
+
+.actionForms{
+    display:none; 
+    align-items: center; 
+    background-color: #2b2d42; 
+    border-radius: 5px;
+    margin-top: 10px;
+}
 
 #commentForm{
     display: flex;
@@ -211,21 +219,21 @@ th, td{
     border-top-right-radius: 5px;
 }
 
-#commentBody{
+#commentBody, #replyBody{
     padding: 20px;
     background-color: #8d99ae;
 }
 
-#commenterPic{
+#commenterPic, #replierPic{
     margin-top: 0;
     border: 0;
 }
 
-#commenterName{
+#commenterName, #replierName{
     margin-left: 10px;
 }
 
-#commentTime{
+#commentTime, #replyTime{
     color:#edf2f4;
     font-size: 15px;
 }
@@ -251,7 +259,7 @@ th, td{
     align-items: center;
 }
 
-#editComment{
+#editComment, #replyComment, #showReplies{
     border: 0;
     background-color: #2b2d42;
     color: #edf2f4;
@@ -272,4 +280,42 @@ th, td{
     width: 100%;
     text-align: center;
     border-width: 0px;
+}
+
+.replies{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.reply{
+    margin-top: 10px;
+    width: 190px;
+    margin-left: 5px;
+    margin-right: 5px;
+    height: 100%;
+}
+
+
+#replyHeader{
+    display: flex;
+    align-items: center;
+    background-color: #2b2d42;
+    color: #edf2f4;
+    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+}
+
+#replyBody{
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+#noReplies{
+    width: 400px;
+    padding: 30px;
+    background-color: #2b2d42;
+    color: #edf2f4;
+    margin-top: 10px;
+    border-radius: 5px;
 }

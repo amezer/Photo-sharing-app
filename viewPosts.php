@@ -45,8 +45,6 @@
         }
 
         function updateComment($commentID, $context){
-            session_start();
-            $id = $_SESSION['id'];
             $dbServername = "localhost";
             $dbUsername = "root";
             $dbPassword = "Z3(sz83Nva-nnYR9";
@@ -65,8 +63,6 @@
         }
 
         function removeComment($commentID){
-            session_start();
-            $id = $_SESSION['id'];
             $dbServername = "localhost";
             $dbUsername = "root";
             $dbPassword = "Z3(sz83Nva-nnYR9";
@@ -75,6 +71,26 @@
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $sql = "DELETE FROM Comments WHERE Comment_ID = '$commentID'";
+            //also need to delete the replies
+            $conn -> exec($sql);
+            header("refresh: 0;");
+        }
+
+        if(isset($_POST['replyComment'.$_POST['Rcomment-id']])) {
+            addReply($_POST['Rcomment-id'], $_POST['r-context'.$_POST['Rcomment-id']]);
+            unset($_POST['replyForm'.$_POST['Rcomment-id']]);
+        }
+
+        function addReply($commentID, $context){
+            session_start();
+            $id = $_SESSION['id'];
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $sql = "INSERT INTO `Replies` (`Comment_ID`, `Replier_ID` ,`Context`) VALUES ('$commentID', '$id', '$context')";
             $conn -> exec($sql);
             header("refresh: 0;");
         }
@@ -97,8 +113,33 @@
                 tmp.style.display = "none";
             }else{
                 tmp.style.display = "flex";
+                if(document.getElementById("replyForm"+id).style.display === "flex"){
+                    document.getElementById("replyForm"+id).style.display = "none";
+                }
             }
         }
+
+        function showReplyComment(id){
+            var tmp = document.getElementById("replyForm"+id);
+            if(tmp.style.display === "flex"){
+                tmp.style.display = "none";
+            }else{
+                tmp.style.display = "flex";
+                if(document.getElementById("editCommentForm"+id).style.display === "flex"){
+                    document.getElementById("editCommentForm"+id).style.display = "none";
+                }
+            }
+        }
+
+        function showAllReplies(id){
+            var tmp = document.getElementById("replies"+id);
+            if(tmp.style.display === "flex"){
+                tmp.style.display = "none";
+            }else{
+                tmp.style.display = "flex";
+            }
+            
+        }        
     </script>
 
     <?php
@@ -237,21 +278,69 @@
 
                             if ($current_userID == $commenterIDs[$j]){
                                 echo '<div id="commentActions">
+                                    <button onclick="showReplyComment('.$commentIDs[$j].')" name="replyComment" id="replyComment">Reply</button>
+                                    <button onclick="showAllReplies('.$commentIDs[$j].')" name="showReplies" id="showReplies">Show Replies</button>
                                     <button onclick="showEditComment('.$commentIDs[$j].')" name="editComment" id="editComment">Edit</button>
                                     <form method="post" action"viewPosts.php" id="deleteCommentHandler'.$commentIDs[$j].'" style="width:100%">
                                         <input type="text" name="comment-id" value="'.$commentIDs[$j].'" style = "display:none;">
                                         <input type="submit" name="removeComment'.$commentIDs[$j].'" id="removeComment" value="Remove">
                                     </form></div>
                                     ';
+                            }else{
+                                echo '<div id="commentActions">
+                                    <button onclick="showReplyComment('.$commentIDs[$j].')" name="replyComment" id="replyComment">Reply</button>
+                                    <button onclick="showAllReplies('.$commentIDs[$j].')" name="showReplies" id="showReplies">Show Replies</button>
+                                    </div>';
                             }
                             
-                            echo '<form method="post" action="viewPosts.php" id="editCommentForm'.$commentIDs[$j].'" style="display:none; align-item: center; background-color: #2b2d42; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                            echo '<form method="post" action="viewPosts.php" id="editCommentForm'.$commentIDs[$j].'" class = "actionForms" >
                                 <input type="text" name="comment-id" value="'.$commentIDs[$j].'" style = "display:none">
                                 <textarea name="c-context'.$commentIDs[$j].'" id="c-context'.$commentIDs[$j].'" row="1" class="commentTxt" style="margin: 10px"></textarea>
                                 <input type="submit" name="editComment'.$commentIDs[$j].'" id="editComment'.$commentIDs[$j].'" value="Edit" class="commentBtn" style="margin: 10px">
                             </form>';
 
-                            echo '</div><br>';
+                            echo '<form method="post" action="viewPosts.php" id="replyForm'.$commentIDs[$j].'" class = "actionForms">
+                                <input type="text" name="Rcomment-id" value="'.$commentIDs[$j].'" style = "display:none">
+                                <textarea name="r-context'.$commentIDs[$j].'" id="r-context'.$commentIDs[$j].'" row="1" class="commentTxt" style="margin: 10px"></textarea>
+                                <input type="submit" name="replyComment'.$commentIDs[$j].'" id="replyComment'.$commentIDs[$j].'" value="Reply" class="commentBtn" style="margin: 10px">
+                            </form>';
+
+                            echo '<div id="replies'.$commentIDs[$j].'"" class="replies" style="display:none">';
+                            
+                            $sql = $conn->prepare("SELECT * FROM Replies WHERE Comment_ID = $commentIDs[$j] ORDER BY Reply_ID DESC"); //fetching data for all Comments
+                            $sql->execute();
+                            $result = $sql->fetchAll();
+                            $replyIDs = array_column($result, 'Reply_ID');
+                            $replyCommentIDs = array_column($result, 'Comment_ID');
+                            $replierIDs = array_column($result, 'Replier_ID');
+                            $replyContexts = array_column($result, 'Context');
+                            $replyTimes = array_column($result, 'Reply_time');
+
+                            if(count($replierIDs) == 0){
+                                echo '<div id="noReplies">No replies yet.</div>';
+                            }else{
+                                for($m = 0; $m < count($replyIDs); $m++){
+                                    if($replyCommentIDs[$m] == $commentIDs[$j]){
+                                        $sql = $conn->prepare("SELECT Username, Profile_pic FROM Users WHERE ID = '$replierIDs[$m]'");
+                                        $sql->execute();
+                                        $result = $sql->fetchAll();
+        
+                                        $replierName = array_column($result, 'Username')[0];
+                                        $replierPic = array_column($result, 'Profile_pic');
+        
+                                        echo '<div class="reply"><div id="replyHeader">
+                                            <a href="display.php?id='.$replierIDs[$m].'"><img id="replierPic" style="width: auto; height: 30px" src="data:image/jpg;base64,'.base64_encode($replierPic[0]).'" />
+                                            <div id="replierName">'.$replierName.'</a></div>
+                                        </div>
+                                        <div id="replyBody">
+                                            <div id="replyContext">'.$replyContexts[$m].'</div>
+                                            <div id="replyTime">'.$replyTimes[$m].'</div>
+                                        </div></div>';
+                                    }
+                                }
+                            }
+
+                            echo '</div></div><br>';
                         }
                         
                     }
@@ -259,8 +348,9 @@
                     echo '<form method="post" action="viewPosts.php" id="commentForm">
                         <input type="text" name="post-id" value="'.$postIDs[$i].'" style = "display:none">
                         <textarea name="c-context'.$postIDs[$i].'" id="c-context'.$postIDs[$i].'" row="1" class="commentTxt"></textarea>
-                        <input type="submit" name="comment'.$postIDs[$i].'" id="comment'.$postIDs[$i].'" value="comment" class="commentBtn">
+                        <input type="submit" name="comment'.$postIDs[$i].'" id="comment'.$postIDs[$i].'" value="Comment" class="commentBtn">
                     </form>';
+    
                     echo '</div></div><br>';
                 }
             }
