@@ -12,65 +12,55 @@
 </head>
 <body>
     <?php
-
         $user = $_POST['username'];
         $email = $_POST['email'];
         $pw = $_POST['password'];
+        //deal with img file
         $image = $_FILES['p-image']['tmp_name'];
         $imgContent = addslashes(file_get_contents($image)); 
         $bio = $_POST['bio'];
+        $hashpw = password_hash($pw, PASSWORD_BCRYPT);
 
-        $servername = "localhost";
-        $username = "root";
-        $dbPassword = "Z3(sz83Nva-nnYR9";
+        require("config.php"); //connect to db
 
-        try{
-            $conn = new PDO("mysql:host=$servername;dbname=photo_sharing_app", $username, $dbPassword);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $sql = $conn->prepare("SELECT Email FROM Users");
+        $sql->execute();
 
-            $hashpw = password_hash($pw, PASSWORD_BCRYPT);
+        $result = $sql->fetchAll();
 
-            $sql = $conn->prepare("SELECT Email FROM Users");
-            $sql->execute();
+        $dbEmails = array_column($result, 'Email');
 
-            $result = $sql->fetchAll();
+        for ($i = 0; $i < count($dbEmails); $i++){
+            if(strcmp($email, $dbEmails[$i]) == 0){ //check if there is duplicated email used before
+                echo "The email is already used. Please choose another email to sign up. Redirecting to Sign Up page after 3 seconds...";
+                header( "refresh:3;url=signUp.php" );
+                break;
+            }else{
+                $sql = "INSERT INTO Users (Username, Password, Email, Profile_pic, Bio)
+                VALUES ('$user', '$hashpw', '$email', '$imgContent', '$bio')";
 
-            $dbEmails = array_column($result, 'Email');
-
-            for ($i = 0; $i < count($dbEmails); $i++){
-                if(strcmp($email, $dbEmails[$i]) == 0){
-                    echo "The email is already used. Please choose another email to sign up. Redirecting to Sign Up page after 3 seconds...";
-                    header( "refresh:3;url=signUp.php" );
-                    break;
-                }else{
-                    $sql = "INSERT INTO Users (Username, Password, Email, Profile_pic, Bio)
-                    VALUES ('$user', '$hashpw', '$email', '$imgContent', '$bio')";
-
-                    $conn -> exec($sql);
-        
-                    $sql = $conn->prepare("SELECT ID FROM Users");
-                    $sql->execute();
-        
-                    $result = $sql->fetchAll();
-        
-                    $id = array_column($result, 'ID');
-        
-                    session_start();
-        
-                    $_SESSION['username'] = $user;
-                    $_SESSION['id'] = $id[count($id)-1];
-                    $_SESSION['email'] = $email;
-                    $_SESSION['img'] = $imgContent;
-                    $_SESSION['bio'] = $bio;
-        
-                    echo "Signed up successfully... Redirecting to main page after 3 seconds...";
-        
-                    header( "refresh:3;url=mainPage.php" );
-                    break;
-                }
+                $conn -> exec($sql);
+    
+                $sql = $conn->prepare("SELECT ID FROM Users");
+                $sql->execute();
+    
+                $result = $sql->fetchAll();
+    
+                $id = array_column($result, 'ID');
+    
+                session_start();
+                //store user info into session
+                $_SESSION['username'] = $user;
+                $_SESSION['id'] = $id[count($id)-1];
+                $_SESSION['email'] = $email;
+                $_SESSION['img'] = $imgContent;
+                $_SESSION['bio'] = $bio;
+    
+                echo "Signed up successfully... Redirecting to main page after 3 seconds...";
+                //redirect to main page after signing up
+                header( "refresh:3;url=mainPage.php" );
+                break;
             }
-        }catch (PDOException $e) {
-            print("Error: " . $sql . "<br>" . $e->getMessage());
         }
     ?>
 </body>

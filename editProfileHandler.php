@@ -13,19 +13,8 @@
 <body>
     <div class="content">
         <?php
-            session_start();
-            $dbServername = "localhost";
-            $dbUsername = "root";
-            $dbPassword = "Z3(sz83Nva-nnYR9";
+            require("config.php");
 
-            try{
-                $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            }catch(PDOException $e){
-                print("Error: " . $sql . "<br>" . $e->getMessage());
-            }
-
-            $current_userID = $_SESSION['id'];
             $username = $_POST['username'];
             $img = $_SESSION['img'];
 
@@ -37,16 +26,15 @@
 
                 $result = $sql->fetchAll();
                 
-                $img = addslashes(array_column($result, 'Profile_pic')[0]);
+                $img = addslashes(array_column($result, 'Profile_pic')[0]);  //prefill img
             }
             
             $bio = $_POST['bio'];
 
-            
-
             $sql = "UPDATE Users SET Username = '$username', Profile_pic = '$img', Bio = '$bio' WHERE ID = '$current_userID'";
             $conn -> exec($sql);
 
+            //update session variables with new user info
             $_SESSION['username'] = $username;
             $_SESSION['img'] = $img;
             $_SESSION['bio'] = $bio;

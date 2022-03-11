@@ -11,90 +11,70 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <div id = "title">
-        <p>
-            <a href="mainPage.php">Main Page</a>
-            <a href="viewPosts.php">View Posts</a>
-            <a href="myPage.php">My Page</a>
-        </p>
-    </div>
+    <?php require("title.php"); ?>    <!-- require navi file -->
     <div class="content">
         <?php
-            session_start();
-            $current_userID = $_SESSION['id'];
+            require("config.php");
+            $sql = $conn->prepare("SELECT * FROM Follows");
+            $sql -> execute();
+            $result = $sql -> fetchAll();
 
-            $dbServername = "localhost";
-            $dbUsername = "root";
-            $dbPassword = "Z3(sz83Nva-nnYR9";
+            $id = array_column($result, 'User_ID');
+            $followers = array_column($result, 'Follower_ID');
 
-            try{
-                $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
-                $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            echo '<table name="followersTable" class="followTable">
+                    <tr>
+                        <th colspan="2">Followers</th>
+                    </tr>';
 
-                $sql = $conn->prepare("SELECT * FROM Follows");
-                $sql -> execute();
-                $result = $sql -> fetchAll();
+                for ($i = 0; $i < count($id); $i++){
+                    if ($id[$i] == $current_userID){
+                        $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $followers[$i]");
+                        $sql->execute();
 
-                $id = array_column($result, 'User_ID');
-                $followers = array_column($result, 'Follower_ID');
+                        $result = $sql->fetchAll();
 
-                echo '<table name="followersTable" class="followTable">
-                        <tr>
-                            <th colspan="2">Followers</th>
+                        $name = array_column($result, 'Username');
+                        $email = array_column($result, 'Email');
+                        $bio = array_column($result, 'Bio');
+                        $profilePic = array_column($result, 'Profile_pic');
+
+                        echo 
+                        '<tr>
+                            <td><img style="width: 100px; height: auto" src="data:image/jpg;base64,'.base64_encode($profilePic[0]).'" />'.$name[0].'</td>
+                            <td><a href="removeFollow.php?type=0&id='.$followers[$i].'">Remove</td>
                         </tr>';
-
-                    for ($i = 0; $i < count($id); $i++){
-                        if ($id[$i] == $current_userID){
-                            $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $followers[$i]");
-                            $sql->execute();
-
-                            $result = $sql->fetchAll();
-
-                            $name = array_column($result, 'Username');
-                            $email = array_column($result, 'Email');
-                            $bio = array_column($result, 'Bio');
-                            $profilePic = array_column($result, 'Profile_pic');
-
-                            echo 
-                            '<tr>
-                                <td><img style="width: 100px; height: auto" src="data:image/jpg;base64,'.base64_encode($profilePic[0]).'" />'.$name[0].'</td>
-                                <td><a href="removeFollow.php?type=0&id='.$followers[$i].'">Remove</td>
-                            </tr>';
-                        }
                     }
+                }
 
-                echo '</table>';
+            echo '</table>';
 
-                echo '<table name="followingTable" class="followTable">
-                        <tr>
-                            <th colspan="2">Following</th>
+            echo '<table name="followingTable" class="followTable">
+                    <tr>
+                        <th colspan="2">Following</th>
+                    </tr>';
+
+                for ($i = 0; $i < count($id); $i++){
+                    if ($followers[$i] == $current_userID){
+                        $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $id[$i]");
+                        $sql->execute();
+
+                        $result = $sql->fetchAll();
+
+                        $name = array_column($result, 'Username');
+                        $email = array_column($result, 'Email');
+                        $bio = array_column($result, 'Bio');
+                        $profilePic = array_column($result, 'Profile_pic');
+
+                        echo 
+                        '<tr>
+                            <td><img style="width: 100px; height: auto" src="data:image/jpg;base64,'.base64_encode($profilePic[0]).'" />'.$name[0].'</td>
+                            <td><a href="removeFollow.php?type=1&id='.$id[$i].'">Remove</td>
                         </tr>';
-
-                    for ($i = 0; $i < count($id); $i++){
-                        if ($followers[$i] == $current_userID){
-                            $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $id[$i]");
-                            $sql->execute();
-
-                            $result = $sql->fetchAll();
-
-                            $name = array_column($result, 'Username');
-                            $email = array_column($result, 'Email');
-                            $bio = array_column($result, 'Bio');
-                            $profilePic = array_column($result, 'Profile_pic');
-
-                            echo 
-                            '<tr>
-                                <td><img style="width: 100px; height: auto" src="data:image/jpg;base64,'.base64_encode($profilePic[0]).'" />'.$name[0].'</td>
-                                <td><a href="removeFollow.php?type=1&id='.$id[$i].'">Remove</td>
-                            </tr>';
-                        }
                     }
-                    
-                echo '</table>';
+                }
                 
-            }catch(PDOException $e){
-                print("Error: " . $sql . "<br>" . $e->getMessage());
-            }
+            echo '</table>';
         ?>
     </div>
 </body>

@@ -12,28 +12,16 @@
 </head>
 <body>
     <?php
-        session_start();
-        $current_userID = $_SESSION['id'];
         $type = $_GET['type'];
         $id = $_GET['id'];
-
-        $dbServername = "localhost";
-        $dbUsername = "root";
-        $dbPassword = "Z3(sz83Nva-nnYR9";
-
-        try{
-            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            if ($type == 0){ // remove follower
-                $sql = "DELETE FROM Follows WHERE User_ID = $current_userID AND Follower_ID = $id";
-                $conn -> exec($sql);
-            }else if($type == 1){ //remove following
-                $sql = "DELETE FROM Follows WHERE User_ID = $id AND Follower_ID = $current_userID";
-                echo $sql;
-                $conn -> exec($sql);
-            }
-        }catch(PDOException $e){
-            print("Error: " . $sql . "<br>" . $e->getMessage());
+        require("config.php");
+        if ($type == 0){ // remove follower
+            $sql = "DELETE FROM Follows WHERE User_ID = $current_userID AND Follower_ID = $id";
+            $conn -> exec($sql);
+        }else if($type == 1){ //remove following
+            $sql = "DELETE FROM Follows WHERE User_ID = $id AND Follower_ID = $current_userID";
+            echo $sql;
+            $conn -> exec($sql);
         }
         header("refresh:0; url=seeFollowers.php");
     ?>

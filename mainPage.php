@@ -11,11 +11,7 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <div id = "title">
-        <p>
-            <a href="myPage.php">My Page</a>
-        </p>
-    </div>
+    <?php require("title.php"); ?>
 
     <div class = "content">
         <?php

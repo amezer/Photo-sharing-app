@@ -12,31 +12,19 @@
 </head>
 <body>
     <?php
-
-        session_start();
-        $servername = "localhost";
-        $username = "root";
-        $dbPassword = "Z3(sz83Nva-nnYR9";
-
-        $userID = $_SESSION['id'];
+        $current_userID = $_SESSION['id'];
         $image = $_FILES['p-image']['tmp_name'];
         $imgContent = addslashes(file_get_contents($image)); 
         $content = $_POST['p-content'];
 
-        try{
-            $conn = new PDO("mysql:host=$servername;dbname=photo_sharing_app", $username, $dbPassword);
-            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-            
-            $sql = "INSERT INTO Posts (User_ID, Content, Picture)
-                    VALUES ('$userID', '$content', '$imgContent')";
-            
-            $conn -> exec($sql);
+        require("config.php");
+        $sql = "INSERT INTO Posts (User_ID, Content, Picture)
+                VALUES ('$current_userID', '$content', '$imgContent')";
+        
+        $conn -> exec($sql);
 
-            echo "Content posted...redirecting to main page after 3 seconds...";
-            header( "refresh:3;url=mainPage.php" );
-        }catch(PDOException $e){
-            print("Error: " . $sql . "<br>" . $e->getMessage());
-        }
+        echo "Content posted...redirecting to main page after 3 seconds...";
+        header( "refresh:3;url=mainPage.php" );
     ?>
 </body>
 </html>

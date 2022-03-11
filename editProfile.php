@@ -20,16 +20,11 @@
             }
         };
     </script>
-    <div id = "title">
-        <p>
-            <a href="mainPage.php">Main Page</a>
-            <a href="viewPosts.php">View Posts</a>
-            <a href="myPage.php">My Page</a>
-        </p>
-    </div>
+    <?php require("title.php"); ?>    <!-- require navi file -->
     <div class="content">
         <?php
             session_start();
+            //fetch old information from session to prefill form
             $oldUsername = $_SESSION['username'];
             $oldProfilePic = $_SESSION['img'];
             $oldBio = $_SESSION['bio'];
