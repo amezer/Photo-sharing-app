@@ -3,13 +3,33 @@
     $id = $_SESSION['id'];
     echo
     '<div class="post">
+        <div id="header">
         <div class="post-user"> Posted by: '.$postUsername.'</div>
+        <div class="dropDown">
+        <div class="threeDots" onclick="showDropDown('.$postIDs[$i].')">
+            <img id="drop-down-icon" src="https://static.thenounproject.com/png/979351-200.png">
+        </div></div>
+        <ol class="dropDownLike" id="dropDownLike'.$postIDs[$i].'" style="display: none">';
+
+        $sql = $conn->prepare("SELECT ID, Username FROM `Users` INNER JOIN POGs ON ID = POGs.User_ID WHERE POGs.Post_ID = '$postIDs[$i]';");
+        $sql->execute();
+        $result = $sql->fetchAll();
+    
+        $likedUsernames = array_column($result, 'Username');
+        $likedUserIDs = array_column($result, 'ID');
+
+        for($x = 0; $x < count($likedUsernames); $x++){
+            echo '<li><a href="display.php?id='.$likedUserIDs[$x].'">'.$likedUsernames[$x].'</a></li>';
+        }
+
+    echo
+        '</ol></div>
         <div class="post-time">'.$postDate[$i].'</div>
         <div class="post-img">
             <img style="width: 400px; height: auto" src="data:image/jpg;base64,'.base64_encode($postPic[$i]).'" />
         </div>
-        <div class="post-content">'.$contents[$i].'</div>
-        <form method="post" action = "viewPosts.php">
+        <div class="post-content">'.$content[$i].'</div>
+        <form method="post">
             <input type="text" name="post-id" value="'.$postIDs[$i].'" style = "display:none">';
     
     for($l = 0; $l < count($dbPostID); $l++){
@@ -108,3 +128,15 @@
 
     echo '</div></div><br>';
 ?>
+
+<script>
+    function showDropDown(id){
+        var list = document.getElementById("dropDownLike"+id);
+        if (list.style.display == "none"){
+            list.style.display = "block";
+        }else{
+            list.style.display = "none";
+        }
+    }
+</script>
+

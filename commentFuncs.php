@@ -43,9 +43,10 @@
             
         }        
     </script>
+
 <?php
         if(isset($_POST['comment'.$_POST['post-id']])) {
-            addComment($_POST['post-id'], $_POST['c-context'.$_POST['post-id']]);
+            addComment($_POST['post-id'], addslashes($_POST['c-context'.$_POST['post-id']]));
             unset($_POST['comment'.$_POST['post-id']]);
         }
 
@@ -65,7 +66,7 @@
         }
 
         if(isset($_POST['editComment'.$_POST['comment-id']])) {
-            updateComment($_POST['comment-id'], $_POST['c-context'.$_POST['comment-id']]);
+            updateComment($_POST['comment-id'], addslashes($_POST['c-context'.$_POST['comment-id']]));
             unset($_POST['editComment'.$_POST['comment-id']]);
         }
 
@@ -102,7 +103,7 @@
         }
 
         if(isset($_POST['replyComment'.$_POST['Rcomment-id']])) {
-            addReply($_POST['Rcomment-id'], $_POST['r-context'.$_POST['Rcomment-id']]);
+            addReply($_POST['Rcomment-id'], addslashes($_POST['r-context'.$_POST['Rcomment-id']]));
             unset($_POST['replyForm'.$_POST['Rcomment-id']]);
         }
 

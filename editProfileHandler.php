@@ -29,7 +29,7 @@
                 $img = addslashes(array_column($result, 'Profile_pic')[0]);  //prefill img
             }
             
-            $bio = $_POST['bio'];
+            $bio = addslashes($_POST['bio']);
 
             $sql = "UPDATE Users SET Username = '$username', Profile_pic = '$img', Bio = '$bio' WHERE ID = '$current_userID'";
             $conn -> exec($sql);
@@ -38,7 +38,6 @@
             $_SESSION['username'] = $username;
             $_SESSION['img'] = $img;
             $_SESSION['bio'] = $bio;
-
             
             header( "refresh:0;url=myPage.php" );
         ?>

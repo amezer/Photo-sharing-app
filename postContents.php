@@ -15,7 +15,7 @@
         $current_userID = $_SESSION['id'];
         $image = $_FILES['p-image']['tmp_name'];
         $imgContent = addslashes(file_get_contents($image)); 
-        $content = $_POST['p-content'];
+        $content = addslashes($_POST['p-content']);
 
         require("config.php");
         $sql = "INSERT INTO Posts (User_ID, Content, Picture)

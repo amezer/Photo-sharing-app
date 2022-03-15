@@ -14,6 +14,7 @@ body{
     position: fixed;
     width: 100%;
     height: 15%;
+    z-index: 3;
 }
 
 #title p{
@@ -318,4 +319,32 @@ th, td{
     color: #edf2f4;
     margin-top: 10px;
     border-radius: 5px;
+}
+
+.dropDown{
+    position: relative;
+    display: inline-block;
+}
+
+#header{
+    display: flex;
+}
+
+#drop-down-icon{
+    border: none;
+    width: auto;
+    height: 30px;
+    margin: 0;
+    margin-left: 268.5px;
+}
+
+.dropDownLike{
+    z-index: 2;
+    border: #8d99ae 3px solid;
+    background-color: #8d99ae;
+    color: #2b2d42;
+    border-radius: 5px;
+    position: absolute;
+    margin: 10px 0 0 400px;
+    padding-right: 15px;
 }

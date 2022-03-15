@@ -18,7 +18,7 @@
         //deal with img file
         $image = $_FILES['p-image']['tmp_name'];
         $imgContent = addslashes(file_get_contents($image)); 
-        $bio = $_POST['bio'];
+        $bio = addslashes($_POST['bio']);
         $hashpw = password_hash($pw, PASSWORD_BCRYPT);
 
         require("config.php"); //connect to db
