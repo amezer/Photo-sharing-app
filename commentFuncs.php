@@ -21,6 +21,15 @@
             }
         }
 
+        function showEditReply(id){
+            var tmp = document.getElementById("editReplyForm"+id);
+            if(tmp.style.display === "flex"){
+                tmp.style.display = "none";
+            }else{
+                tmp.style.display = "flex";
+            }
+        }
+
         function showReplyComment(id){
             var tmp = document.getElementById("replyForm"+id);
             if(tmp.style.display === "flex"){
@@ -97,7 +106,9 @@
             $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             $sql = "DELETE FROM Comments WHERE Comment_ID = '$commentID'";
-            //also need to delete the replies
+            $conn -> exec($sql);
+
+            $sql = "DELETE FROM Replies WHERE Comment_ID = '$commentID'";
             $conn -> exec($sql);
             header("refresh: 0;");
         }
@@ -157,5 +168,41 @@
             $sql = "DELETE FROM Follows WHERE User_ID = $userID AND Follower_ID = $id";
             $conn -> exec($sql);
             header("Refresh:0;");
+        }
+
+        if(isset($_POST['removeReply'.$_POST['reply-id']])) {
+            removeReply($_POST['reply-id']);
+            unset($_POST['removeReply'.$_POST['reply-id']]);
+        }
+    
+        function removeReply($replyID){
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+    
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    
+            $sql = "DELETE FROM Replies WHERE Reply_ID = '$replyID'";
+            $conn -> exec($sql);
+            header("refresh: 0;");
+        }
+
+        if(isset($_POST['editReply'.$_POST['reply-id']])) {
+            updateReply($_POST['reply-id'], addslashes($_POST['r-context'.$_POST['reply-id']]));
+            unset($_POST['editReply'.$_POST['reply-id']]);
+        }
+
+        function updateReply($replyID, $context){
+            $dbServername = "localhost";
+            $dbUsername = "root";
+            $dbPassword = "Z3(sz83Nva-nnYR9";
+
+            $conn = new PDO("mysql:host=$dbServername;dbname=photo_sharing_app", $dbUsername, $dbPassword);
+            $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = "UPDATE Replies SET Context = '$context' WHERE Reply_ID = '$replyID'";
+            $conn -> exec($sql);
+            header("refresh: 0;");
         }
 ?>

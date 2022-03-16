@@ -29,7 +29,25 @@
                 <div id="replyBody">
                     <div id="replyContext">'.$replyContexts[$m].'</div>
                     <div id="replyTime">'.$replyTimes[$m].'</div>
-                </div></div>';
+                </div>';
+
+                if($id == $replierIDs[$m]){
+                    echo 
+                    '<div id="replyActions">
+                        <button onclick="showEditReply('.$replyIDs[$m].')" name="editReply" id="editReply">Edit</button>
+                        <form method="post" id="deleteReplyHandler'.$replyIDs[$m].'" style="width:100%">
+                            <input type="text" name="reply-id" value="'.$replyIDs[$m].'" style = "display:none;">
+                            <input type="submit" name="removeReply'.$replyIDs[$m].'" id="removeReply" value="Remove" >
+                        </form>
+                    </div>';
+                }
+
+                echo '<form method="post" id="editReplyForm'.$replyIDs[$m].'" style="display:none; align-item: center; flex-wrap: wrap; background-color: #2b2d42; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;">
+                    <input type="text" name="reply-id" value="'.$replyIDs[$m].'" style = "display:none">
+                    <textarea name="r-context'.$replyIDs[$m].'" id="r-context'.$replyIDs[$m].'" row="1" class="commentTxt" style="margin: 10px"></textarea>
+                    <input type="submit" name="editReply'.$replyIDs[$m].'" id="editReply'.$replyIDs[$m].'" value="Edit" class="commentBtn" style="margin: 10px; margin-top: 0; width: 100%; padding: 5px">
+                </form>';
+                echo '</div>';
             }
         }
     }

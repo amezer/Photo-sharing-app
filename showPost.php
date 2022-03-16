@@ -37,6 +37,7 @@
             echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="UNPOG" id="pog'.$postIDs[$i].'">
                     </form>';
             $echoed = true;
+            break;
         }
     }
     if(!$echoed){

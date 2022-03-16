@@ -63,7 +63,6 @@
             $sql = $conn->prepare("SELECT * FROM Comments ORDER BY Comment_ID DESC"); //fetching data for all Comments
             $sql->execute();
             $result = $sql->fetchAll();
-            
             $commentIDs = array_column($result, 'Comment_ID');
             $commenterIDs = array_column($result, 'Commenter_ID');
             $commentingPostIDs = array_column($result, 'Post_ID');
@@ -73,7 +72,6 @@
             $sql = $conn->prepare("SELECT * FROM Users"); //fetching user table columns
             $sql->execute();
             $result = $sql->fetchAll();
-
             $userdbIDs = array_column($result, 'ID');
             $usernames = array_column($result, 'Username');
             $userPics = array_column($result, 'Profile_pic');
