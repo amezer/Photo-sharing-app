@@ -68,14 +68,14 @@
                 }
 
                 $isFollowing = false;
-
+                //check if the user is following th ecurrent iterated user
                 for($k = 0; $k < count($followingIDs); $k++){
                     if($userIDs[$i] == $followingIDs[$k] && $followerIDs[$k] == $current_userID){
                         $isFollowing = true;
                         break;
                     }
                 }
-
+                //if the user is following the other users, show the other users' posts
                 if($isFollowing){
                     require("showPost.php");
                 }

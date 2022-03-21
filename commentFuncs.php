@@ -1,4 +1,5 @@
 <script>
+        //all toggling functions in js
         function showComments(id){
             var tmp = document.getElementById("allComments"+id);
             if(tmp.style.display === "block"){
@@ -6,7 +7,6 @@
             }else{
                 tmp.style.display = "block";
             }
-            
         }
 
         function showEditComment(id){
@@ -55,6 +55,7 @@
 
 <?php
         if(isset($_POST['comment'.$_POST['post-id']])) {
+            //insert new comment into database
             addComment($_POST['post-id'], addslashes($_POST['c-context'.$_POST['post-id']]));
             unset($_POST['comment'.$_POST['post-id']]);
         }
@@ -75,6 +76,7 @@
         }
 
         if(isset($_POST['editComment'.$_POST['comment-id']])) {
+            //edit comment
             updateComment($_POST['comment-id'], addslashes($_POST['c-context'.$_POST['comment-id']]));
             unset($_POST['editComment'.$_POST['comment-id']]);
         }
@@ -108,12 +110,14 @@
             $sql = "DELETE FROM Comments WHERE Comment_ID = '$commentID'";
             $conn -> exec($sql);
 
+            //also remove the replies for the comments when removing the comment
             $sql = "DELETE FROM Replies WHERE Comment_ID = '$commentID'";
             $conn -> exec($sql);
             header("refresh: 0;");
         }
 
         if(isset($_POST['replyComment'.$_POST['Rcomment-id']])) {
+            //insert new reply to comment
             addReply($_POST['Rcomment-id'], addslashes($_POST['r-context'.$_POST['Rcomment-id']]));
             unset($_POST['replyForm'.$_POST['Rcomment-id']]);
         }

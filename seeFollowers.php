@@ -14,7 +14,7 @@
     <?php require("title.php"); ?>    <!-- require navi file -->
     <div class="content">
         <?php
-            require("config.php");
+            require("config.php"); //require connection to database
             $sql = $conn->prepare("SELECT * FROM Follows");
             $sql -> execute();
             $result = $sql -> fetchAll();
@@ -22,11 +22,13 @@
             $id = array_column($result, 'User_ID');
             $followers = array_column($result, 'Follower_ID');
 
+            //echo the results in forms of <table>
             echo '<table name="followersTable" class="followTable">
                     <tr>
                         <th colspan="2">Followers</th>
                     </tr>';
 
+                //echo the rows of the data, including user profile pic, name, and a button for removing the follower
                 for ($i = 0; $i < count($id); $i++){
                     if ($id[$i] == $current_userID){
                         $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $followers[$i]");
@@ -49,11 +51,13 @@
 
             echo '</table>';
 
+            //echo the results in forms of <table>
             echo '<table name="followingTable" class="followTable">
                     <tr>
                         <th colspan="2">Following</th>
                     </tr>';
-
+                
+                    //echo the rows of the data, including user profile pic, name, and a button for removing following users
                 for ($i = 0; $i < count($id); $i++){
                     if ($followers[$i] == $current_userID){
                         $sql = $conn->prepare("SELECT * FROM Users WHERE ID = $id[$i]");

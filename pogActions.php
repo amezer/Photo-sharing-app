@@ -26,15 +26,62 @@
                 $sql = "DELETE FROM POGs WHERE Post_ID = $postID AND User_ID = $id";
                 $conn -> exec($sql);
                 $executed = 1;
-                echo '<script> document.getElementById("pog'.$postID.'").value = "POG";</script>';
+                //change the display of the like button and reset the like list
+                echo '<script> 
+                    document.getElementById("pog'.$postID.'").value = "POG";
+                    var list = document.getElementById("dropDownLike'.$postID.'");
+                    list.innerHTML = "";
+                </script>';
+                //fetch the list again to avoid lag
+                $sql = $conn->prepare("SELECT ID, Username FROM `Users` INNER JOIN POGs ON ID = POGs.User_ID WHERE POGs.Post_ID = '$postID';");
+                $sql->execute();
+                $result = $sql->fetchAll();
+            
+                $likedUsernames = array_column($result, 'Username');
+                $likedUserIDs = array_column($result, 'ID');
+                //check if anyone liked the post
+                if(count($likedUsernames) == 0){
+                    echo '<script>
+                        list.innerHTML = "No one POGGED the post...SADGE";
+                    </script>';
+                }else{
+                    for($x = 0; $x < count($likedUsernames); $x++){
+                        echo '<script>
+                            var li = document.createElement("li");
+                            li.innerHTML = "<a href=\"display.php?id='.$likedUserIDs[$x].'\">'.$likedUsernames[$x].'</a>";
+                            list.appendChild(li);
+                        </script>';
+                    }
+                }
                 break;
             }
         }
         if($executed == 0){
             $sql = "INSERT INTO POGs (Post_ID, User_ID) VALUES ($postID, $id)";
             $conn -> exec($sql);
-            echo '<script> document.getElementById("pog'.$postID.'").value = "UNPOG";</script>';
+            //change the display of the like button and reset the like list
+            echo '<script> 
+                document.getElementById("pog'.$postID.'").value = "UNPOG";
+                var list = document.getElementById("dropDownLike'.$postID.'");
+                list.innerHTML = "";
+            </script>';
+            //fetch the list again to avoid lag
+            $sql = $conn->prepare("SELECT ID, Username FROM `Users` INNER JOIN POGs ON ID = POGs.User_ID WHERE POGs.Post_ID = '$postID';");
+            $sql->execute();
+            $result = $sql->fetchAll();
+        
+            $likedUsernames = array_column($result, 'Username');
+            $likedUserIDs = array_column($result, 'ID');
+
+            for($x = 0; $x < count($likedUsernames); $x++){
+                echo '<script>
+                        var li = document.createElement("li");
+                        li.innerHTML = "<a href=\"display.php?id='.$likedUserIDs[$x].'\">'.$likedUsernames[$x].'</a>";
+                        list.appendChild(li);
+                    </script>';
+            }
         }
         $executed = 0;
+        header("refresh: 0;");
     }
 ?>

@@ -10,11 +10,12 @@
     $replyContexts = array_column($result, 'Context');
     $replyTimes = array_column($result, 'Reply_time');
 
+    //if there are no replies for the specific comment, show No replies yet. 
     if(count($replierIDs) == 0){
         echo '<div id="noReplies">No replies yet.</div>';
     }else{
         for($m = 0; $m < count($replyIDs); $m++){
-            if($replyCommentIDs[$m] == $commentIDs[$j]){
+            if($replyCommentIDs[$m] == $commentIDs[$j]){ //check if the reply belongs to the current comment
                 $sql = $conn->prepare("SELECT Username, Profile_pic FROM Users WHERE ID = '$replierIDs[$m]'");
                 $sql->execute();
                 $result = $sql->fetchAll();
@@ -31,6 +32,7 @@
                     <div id="replyTime">'.$replyTimes[$m].'</div>
                 </div>';
 
+                //only show edit and remove reply if the current logged in user is the one leaving the reply
                 if($id == $replierIDs[$m]){
                     echo 
                     '<div id="replyActions">

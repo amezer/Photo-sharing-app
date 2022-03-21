@@ -10,14 +10,14 @@
             <img id="drop-down-icon" src="https://static.thenounproject.com/png/979351-200.png">
         </div></div>
         <ol class="dropDownLike" id="dropDownLike'.$postIDs[$i].'" style="display: none">';
-
+        //show the three dots where users can view all likes for the post
         $sql = $conn->prepare("SELECT ID, Username FROM `Users` INNER JOIN POGs ON ID = POGs.User_ID WHERE POGs.Post_ID = '$postIDs[$i]';");
         $sql->execute();
         $result = $sql->fetchAll();
     
         $likedUsernames = array_column($result, 'Username');
         $likedUserIDs = array_column($result, 'ID');
-
+        //allow users to link to other user pgs from the pog list
         for($x = 0; $x < count($likedUsernames); $x++){
             echo '<li><a href="display.php?id='.$likedUserIDs[$x].'">'.$likedUsernames[$x].'</a></li>';
         }
@@ -33,14 +33,14 @@
             <input type="text" name="post-id" value="'.$postIDs[$i].'" style = "display:none">';
     
     for($l = 0; $l < count($dbPostID); $l++){
-        if($postIDs[$i] == $dbPostID[$l] && $id == $dbUserID[$l]){
+        if($postIDs[$i] == $dbPostID[$l] && $id == $dbUserID[$l]){ //if there is a matching pog in the database, then show unpog
             echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="UNPOG" id="pog'.$postIDs[$i].'">
                     </form>';
             $echoed = true;
             break;
         }
     }
-    if(!$echoed){
+    if(!$echoed){ //if no match, then show pog
         echo   '<input type="submit" name="pog'.$postIDs[$i].'" value="POG" id="pog'.$postIDs[$i].'">
         </form>';
     }
@@ -50,7 +50,7 @@
     $result = $sql->fetchAll();
 
     $numOfComments = count(array_column($result, 'Post_ID'));
-
+    //show different innerHTML base on different sizes of the comments for the post
     if($numOfComments > 1){
         echo '<button class="showComment" onclick="showComments('.$postIDs[$i].')">'.$numOfComments.' Comments</button>';
     }else if($numOfComments == 1){
@@ -60,7 +60,7 @@
     }
 
     echo '<div id="allComments'.$postIDs[$i].'" style="display: none">';
-    for($j = 0; $j < count($commenterIDs); $j++){
+    for($j = 0; $j < count($commenterIDs); $j++){ //iterate through all comments for the post
         $commenterName = "defaultName";
         $commenterPic = $_SESSION['img'];
         $canEcho = false;
@@ -73,7 +73,7 @@
             }
         }
 
-        if($canEcho){
+        if($canEcho){ //print out the comments
             echo '
             <div class="comment">
             <div id="commentUserInfo">
@@ -114,7 +114,7 @@
                 <input type="submit" name="replyComment'.$commentIDs[$j].'" id="replyComment'.$commentIDs[$j].'" value="Reply" class="commentBtn" style="margin: 10px">
             </form>';
 
-            require("replies.php");
+            require("replies.php"); //require php for showing replies
 
             echo '</div></div><br>';
         }
@@ -130,7 +130,7 @@
     echo '</div></div><br>';
 ?>
 
-<script>
+<script> //for toggling the pog list
     function showDropDown(id){
         var list = document.getElementById("dropDownLike"+id);
         if (list.style.display == "none"){

@@ -19,15 +19,12 @@
             require("config.php");
 
             $stmt = $conn -> prepare("SELECT * FROM Users WHERE Username LIKE ?"); //find similar usernames
-
             $name = "%$name%";
-
             $stmt -> bindParam(1, $name);
-
             $stmt -> execute();
-
             $row = $stmt -> fetch();
             
+            //show all results of search
             for($i = 0; $i < count($row['Username']); $i++){
                 echo '<a href = "display.php?id='.$row['ID'].'" style="display: flex; align-item: center">'.'<img style="width: auto; height: 100px; margin-top: 0" src="data:image/jpg;base64,'.base64_encode($row['Profile_pic']).'" /><div style="font-size: 40px; padding: 30px">'.$row['Username'].'</div></a>';
             }

@@ -36,7 +36,7 @@
 
             for ($i = 0; $i < count($postIDs); $i++){
                 for ($j = 0; $j < count($dbPostID); $j++){
-                    if($postIDs[$i] == $dbPostID[$j] && $current_userID == $dbUserID[$j]){
+                    if($postIDs[$i] == $dbPostID[$j] && $current_userID == $dbUserID[$j]){ //see if there is a match between pog db and the current userID + postID
                         echo
                         '<div class="post">
                             <div class="post-time">'.$postDate[$i].'</div>
@@ -50,11 +50,11 @@
                                 <input type="submit" name="pog'.$postIDs[$i].'" value="UNPOG" id="pog'.$postIDs[$i].'">
                             </form></div></div>
                         <br>';
-                        $poggedCount++;
+                        $poggedCount++; //count pogs
                     }
                 }
             }
-
+            //show no pogs if no pogs
             if($poggedCount == 0){
                 echo 'No posts Pogged, sadge';
             }

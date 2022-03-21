@@ -17,7 +17,7 @@
         $imgContent = addslashes(file_get_contents($image)); 
         $content = addslashes($_POST['p-content']);
 
-        require("config.php");
+        require("config.php"); //connect to db
         $sql = "INSERT INTO Posts (User_ID, Content, Picture)
                 VALUES ('$current_userID', '$content', '$imgContent')";
         

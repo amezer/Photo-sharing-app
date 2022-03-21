@@ -12,6 +12,7 @@
 </head>
 <body>
     <div class="content" style="margin-top:0">
+    <!-- sign up form that leads to a handler to insert new user info into database -->
         <form action="signUpHandler.php" method="POST" enctype="multipart/form-data">
             <input type="text" name="username" id="username" placeholder="Enter Username">
             <br>
@@ -33,6 +34,7 @@
                 document.getElementById("post-content-form").style.display = "block";
             }
 
+            //show preview of uploaded img when file is attatched
             var loadFile = function(event) {
                 var preview = document.getElementById('img-preview');
                 preview.src = URL.createObjectURL(event.target.files[0]);

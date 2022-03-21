@@ -16,9 +16,9 @@
         $inputEmail = $_POST['email'];
         $inputPassword = $_POST['password'];
         
-        require("config.php");
+        require("config.php"); //require configuration for the database
 
-        $sql = $conn->prepare("SELECT * FROM Users");
+        $sql = $conn->prepare("SELECT * FROM Users"); //fetch all user infos
         $sql->execute();
 
         $result = $sql->fetchAll();
@@ -32,6 +32,7 @@
         $haveMatch = 0;
 
         for ($i = 0; $i < count($ids); $i++){
+            //check if the inputs match
             if(strcmp($inputName, $usernames[$i]) == 0 && strcmp($inputEmail, $emails[$i]) == 0 && password_verify($inputPassword, $hashPws[$i])){
                 session_start();
                 $_SESSION['id'] = $ids[$i];
@@ -45,6 +46,7 @@
                 break;
             }
         }
+        //if no match, redirect to login page
         if($haveMatch == 0){
             echo "Username/email/password incorrect, redirecting to login page in 3 seconds.";
             header("refresh:3; url=logIn.php");
