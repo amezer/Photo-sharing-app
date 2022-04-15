@@ -12,7 +12,6 @@
 </head>
 <body>
     <?php
-        echo "signUp handler";
         $user = $_POST['username'];
         $email = $_POST['email'];
         $pw = $_POST['password'];
@@ -30,6 +29,8 @@
         $result = $sql->fetchAll();
 
         $dbEmails = array_column($result, 'Email');
+
+        var_dump($dbEmails);
 
         if(count($dbEmails) == 0){
             $sql = "INSERT INTO Users (Username, Password, Email, Profile_pic, Bio)
