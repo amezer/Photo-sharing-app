@@ -12,6 +12,7 @@
 </head>
 <body>
     <?php
+        echo "in signin handler";
         $user = $_POST['username'];
         $email = $_POST['email'];
         $pw = $_POST['password'];

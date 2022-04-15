@@ -1,4 +1,5 @@
 <?php 
+    echo "trying to connect...";
     session_start();
     $current_userID = $_SESSION['id'];
     $dbServername = "us-cdbr-east-05.cleardb.net";
