@@ -31,6 +31,31 @@
 
         $dbEmails = array_column($result, 'Email');
 
+        if(count($dbEmails) == 0){
+            $sql = "INSERT INTO Users (Username, Password, Email, Profile_pic, Bio)
+                VALUES ('$user', '$hashpw', '$email', '$imgContent', '$bio')";
+
+                $conn -> exec($sql);
+    
+                $sql = $conn->prepare("SELECT ID FROM Users");
+                $sql->execute();
+    
+                $result = $sql->fetchAll();
+    
+                $id = array_column($result, 'ID');
+    
+                session_start();
+                //store user info into session
+                $_SESSION['username'] = $user;
+                $_SESSION['id'] = $id[count($id)-1];
+                $_SESSION['email'] = $email;
+                $_SESSION['img'] = $imgContent;
+                $_SESSION['bio'] = $bio;
+    
+                echo "Signed up successfully... Redirecting to main page after 3 seconds...";
+                //redirect to main page after signing up
+                header( "refresh:3;url=mainPage.php" );
+        }else{
         for ($i = 0; $i < count($dbEmails); $i++){
             if(strcmp($email, $dbEmails[$i]) == 0){ //check if there is duplicated email used before
                 echo "The email is already used. Please choose another email to sign up. Redirecting to Sign Up page after 3 seconds...";
@@ -62,7 +87,7 @@
                 header( "refresh:3;url=mainPage.php" );
                 break;
             }
-        }
+        }}
     ?>
 </body>
 </html>
