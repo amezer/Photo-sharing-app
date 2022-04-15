@@ -14,6 +14,7 @@
         $current_userID = $_SESSION['id'];
         $conn = new PDO("mysql:host=$dbServername;dbname=$database", $dbUsername, $dbPassword);
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        echo "connected";
     }catch(PDOException $e){
         print("Error: " . $sql . "<br>" . $e->getMessage());
     }
