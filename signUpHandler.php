@@ -24,7 +24,7 @@
 
         // require("config.php"); //connect to db
 
-
+        echo "connection starts here";
         session_start();
     $current_userID = $_SESSION['id'];
     $dbServername = "us-cdbr-east-05.cleardb.net";
