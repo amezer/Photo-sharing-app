@@ -12,6 +12,7 @@
 </head>
 <body>
     <?php
+        echo "signUp handler";
         $user = $_POST['username'];
         $email = $_POST['email'];
         $pw = $_POST['password'];
